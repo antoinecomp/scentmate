@@ -3,10 +3,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate
-from .forms import TodoForm
+from .forms import TodoForm, QuizForm
 from .models import Todo
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+import json
 
 
 def home(request):
@@ -105,3 +106,20 @@ def deletetodo(request, todo_pk):
         todo.datecompleted = timezone.now()
         todo.delete()
         return redirect('currenttodos')
+
+
+def quiz(request):
+    with open('todo/templates/todo/data/keywords.json') as f:
+        keywords = json.load(f)
+    if request.method == 'POST':
+        form = QuizForm(request.POST)
+        if form.is_valid():
+            keywords_selected = form.cleaned_data['keywords_selected']
+            print("keywords_selected: ", keywords_selected)
+    form = QuizForm()
+    return render(request, 'todo/quiz2.html', {'form': form, 'keywords': keywords})
+
+
+def quiz2(request):
+    form = QuizForm
+    return render(request, 'todo/quiz2.html', {'form': form})

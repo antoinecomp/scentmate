@@ -1,19 +1,100 @@
 {% extends "todo/base.html" %}
 
 {% block content %}
-<br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-<div class="row justify-content-center mt-5">
-        <div class="col-md-7 text-center">
-
-                 <h1>Simply Your Todos. Woo!</h1>
-            <p>Life is fun. But life is also busy. There's a million different things you could be doing. But what matters is <u>what</u> you do. We created <b><i>Todo Woo</i></b> to help you make sense of all of your opportunities and live that life that matters most to you. Your new organized life awaits.</p>
-        <a role="button" class="btn btn-primary btn-lg" href="{% url 'signupuser' %}">Start</a>
+    <!-- Header -->
+    <header class="intro-header">
+      <div class="container">
+        <div class="intro-message">
+          <h1>ScentMate</h1>
+          <h2>Le parfumeur personnel</h2>
+          <h5>Prêt à trouver le prochain parfum ? <br> Voici trois façons de trouver le parfum qui vous convient le mieux</h5>
+          <hr class="intro-divider">
+          <ul class="list-inline intro-social-buttons">
+            <li class="list-inline-item">
+              <a href="/quiz" class="btn btn-secondary btn-lg">
+                <span class="network-name">Take a quiz</span>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="/predict" class="btn btn-secondary btn-lg">
+                <span class="network-name">Find similar</span>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a href="/signin" class="btn btn-secondary btn-lg">
+                <span class="network-name">  Sign in   </span>
+              </a>
+            </li>
+          </ul>
         </div>
-    </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <section class="content-section-a" id="about">
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-5 ml-auto">
+            <hr class="section-heading-spacer">
+            <div class="clearfix"></div>
+            <h2 class="section-heading">Personalized recommendations<br>Machine learning backed up</h2>
+            <p class="lead">No need to do research and try out everything at beauty stores.
+              We believe there's an easier way for you to find your best match.</p>
+          </div>
+          <div class="col-lg-5 mr-auto">
+            <img class="img-fluid" src="img/ipad.png" alt="">
+          </div>
+        </div>
+
+      </div>
+      <!-- /.container -->
+    </section>
+
+    <section class="content-section-b">
+
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-5 mr-auto order-lg-2">
+            <hr class="section-heading-spacer">
+            <div class="clearfix"></div>
+            <h2 class="section-heading">The more ratings you give<br>The better we know you</h2>
+            <p class="lead">Register and rate 5 perfumes you have tried.
+              You'll be surprised that we know you too well.</p>
+          </div>
+          <div class="col-lg-5 ml-auto order-lg-1">
+            <img class="img-fluid" src="img/dog.png" alt="">
+          </div>
+        </div>
+
+      </div>
+      <!-- /.container -->
+
+    </section>
+    <!-- /.content-section-b -->
+
+    <section class="content-section-a">
+
+      <div class="container">
+
+        <div class="row">
+          <div class="col-lg-5 ml-auto">
+            <hr class="section-heading-spacer">
+            <div class="clearfix"></div>
+            <h2 class="section-heading">Explore the world of<br>Fine fragrances</h2>
+            <p class="lead">The idea comes from our love and passion for fragrances.
+              Our goal is to select best fragrances just for you...</p>
+          </div>
+          <div class="col-lg-5 mr-auto ">
+            <img class="img-fluid" src="img/phones.png" alt="">
+          </div>
+        </div>
+
+      </div>
+      <!-- /.container -->
+
+    </section>
+    <!-- /.content-section-a -->
 
 {% endblock %}
