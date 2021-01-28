@@ -18,22 +18,26 @@
       <dt>
         <span>Pick the keywords you want to express when wearing perfume</span>
       </dt>
-      <div class="row">
-        <div class="col-lg-5 mr-auto order-lg-2">
-          <div class="recommendations">
-            <form action = "/getmatch" method="POST">
-                {% for keyword in keywords %}
-                <div class="col-lg-4 col-md-6">
-                    <h3>{{ keyword.title }}</h3>
-                </div>
-                {% endfor %}
-                {% csrf_token %}
-                <button type="submit">Envoyer</button>
-            </form>
+
+    <form action = "/getmatch" method="POST">
+      {% for keyword in keywords %}
+      <div class="items col-xs-6 col-sm-3 col-md-3 col-lg-3">
+          <div class="info-block block-info clearfix">
+              <div data-toggle="buttons" class="btn-group itemcontent">
+                  <label class="btn btn-default">
+                      <div class="itemcontent">
+                          <input type="checkbox" name="var_id[]" autocomplete="off" value="">
+    <!--                          <span class="fa fa-keyboard-o fa-2x"></span>-->
+                          <h5>{{ keyword.title }}</h5>
+                      </div>
+                  </label>
+              </div>
           </div>
-        </div>
-      <!-- /.container -->
       </div>
+      {% endfor %}
+      {% csrf_token %}
+        <button type="submit">Envoyer</button>
+    </form>
     </div>
   </section>
 
