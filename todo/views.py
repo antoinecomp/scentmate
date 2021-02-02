@@ -123,3 +123,41 @@ def quiz(request):
 def quiz2(request):
     form = QuizForm
     return render(request, 'todo/quiz2.html', {'form': form})
+
+
+def getmatch(request):
+    if request.method == 'POST':
+        result = request.GET.get('keywords[]')
+        print("result: ", result)
+        # Prepare the feature vector for prediction
+        pkl_index = open('../models/pickled_models/perfume_df.pkl', 'rb')
+        # index_dict = pickle.load(pkl_index)
+        # new_vector = np.zeros(len(index_dict))
+        # new_vector[index_dict['gender_' + str('中性香')]] = 1
+        # features = defaultdict(list)
+        # for key in result.keys():
+        #     for value in result.getlist(key):
+        #         try:
+        #             features[key].append(value)
+        #             new_vector[index_dict[key + '_' + value]] = 1
+        #         except:
+        #             pass
+        # prediction = model.predict_by_vector(new_vector)
+        # recs = list(collection.find({'perfume_id': {'$in': prediction}}, {'item_name': 1,
+        #                                                                   'brand': 1, 'gender': 1, 'note': 1,
+        #                                                                   'theme': 1, '_id': 0}))
+        # # Translation from CN to English
+        # brand_dict = dt.brand_dict()
+        # note_dict = dt.note_dict()
+        # gender_dict = dt.gender_dict()
+        # theme_dict = dt.theme_dict()
+        # for rec in recs:
+        #     try:
+        #         rec['brand_en'] = brand_dict[rec['brand']]
+        #         rec['gender_en'] = gender_dict[rec['gender']]
+        #         rec['theme_en'] = theme_dict[rec['theme']]
+        #         rec['note_en'] = [note_dict[note] for note in rec['note']]
+        #     except:
+        #         pass
+        # return render('result.html', features=features, prediction=prediction, recs=recs)
+        return render('result.html')

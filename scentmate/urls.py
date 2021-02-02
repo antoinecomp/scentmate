@@ -36,5 +36,6 @@ urlpatterns = [
 
     # quizz
     path('quiz', views.quiz, name="quiz"),
+    path('getmatch', views.getmatch, name="getmatch"),
 
 ]

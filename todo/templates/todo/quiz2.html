@@ -2,6 +2,39 @@
 
 {% block content %}
 
+   <style>
+      .elements {
+        display: block;
+      }
+      .items {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        flex-direction: column;
+      }
+      .item {
+        flex: 1 0 20%;
+      }
+      .item-check {
+        display: none;
+      }
+      .item-name {
+        padding: 8px;
+        margin: 2px;
+        border-radius: 8px;
+        border: 1px solid rgba(61, 86, 233, 0.3);
+        text-align: center;
+      }
+      .item .item-check:checked + .item-name {
+        background-color: rgba(61, 86, 233, 0.3);
+      }
+      .item-name:hover {
+        background-color:orange;
+      }
+
+    </style>
+
   <!-- Header -->
   <header class="intro-header">
     <div class="container">
@@ -21,19 +54,16 @@
 
     <form action = "/getmatch" method="POST">
       {% for keyword in keywords %}
-      <div class="items col-xs-6 col-sm-3 col-md-3 col-lg-3">
-          <div class="info-block block-info clearfix">
-              <div data-toggle="buttons" class="btn-group itemcontent">
-                  <label class="btn btn-default">
-                      <div class="itemcontent">
-                          <input type="checkbox" name="var_id[]" autocomplete="off" value="">
-    <!--                          <span class="fa fa-keyboard-o fa-2x"></span>-->
-                          <h5>{{ keyword.title }}</h5>
-                      </div>
-                  </label>
-              </div>
-          </div>
-      </div>
+        <div class="elements">
+            <ul class="items">
+              <li class="item">
+                <label>
+                  <input class="item-check" name="keywords[]" type="checkbox" value= {{ keyword.title }} />
+                  <div class="item-name">{{ keyword.title }}</div>
+                </label>
+              </li>
+            </ul>
+        </div>
       {% endfor %}
       {% csrf_token %}
         <button type="submit">Envoyer</button>
@@ -45,5 +75,7 @@
   <script src="static/vendor/jquery/jquery.min.js"></script>
   <script src="static/vendor/popper/popper.min.js"></script>
   <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+
 
 {% endblock %}
