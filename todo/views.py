@@ -8,6 +8,11 @@ from .models import Todo
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 import json
+import pymongo
+import todo.config as config
+
+username = config.username
+password = config.password
 
 
 def home(request):
@@ -109,7 +114,7 @@ def deletetodo(request, todo_pk):
 
 
 def quiz(request):
-    with open('todo/templates/todo/data/keywords.json') as f:
+    with open('todo/templates/todo/data/keywords_translated.json') as f:
         keywords = json.load(f)
     if request.method == 'POST':
         form = QuizForm(request.POST)
@@ -125,12 +130,42 @@ def quiz2(request):
     return render(request, 'todo/quiz2.html', {'form': form})
 
 
+def querydict_to_dict(query_dict):
+    data = {}
+    for key in query_dict.keys():
+        v = query_dict.getlist(key)
+        if len(v) == 1:
+            v = v[0]
+        data[key] = v
+    return data
+
+
+def get_top_products(products, selected_words):
+    # for each product we need to create the total scores on selected_words
+    for product in products:
+        total = 0
+        for word in selected_words:
+            total += product['d']['attributs'][word]['perceived_benefit']
+        product['total'] = total
+    return sorted(products, key = lambda i: i['total'])[5:]
+    
+
 def getmatch(request):
     if request.method == 'POST':
-        result = request.GET.get('keywords[]')
-        print("result: ", result)
+        print(request)
+        if request.method == 'POST':
+            selected_words = querydict_to_dict(request.POST)['keywords[]']
+            print("result: ", selected_words)
+            client = pymongo.MongoClient(
+                f"mongodb+srv://{username}:{password}@cluster0.n2hnd.mongodb.net/ifresearch?retryWrites=true&w=majority")
+            collection = client.test.sephora_backup3
+            cursor = collection.find({})
+            products = [x for x in cursor]
+            # on veut celui qui maximise la somme des attributs dans results
+            top_products = get_top_products(products, selected_words)
+
         # Prepare the feature vector for prediction
-        pkl_index = open('../models/pickled_models/perfume_df.pkl', 'rb')
+        # pkl_index = open('../models/pickled_models/perfume_df.pkl', 'rb')
         # index_dict = pickle.load(pkl_index)
         # new_vector = np.zeros(len(index_dict))
         # new_vector[index_dict['gender_' + str('中性香')]] = 1
@@ -160,4 +195,5 @@ def getmatch(request):
         #     except:
         #         pass
         # return render('result.html', features=features, prediction=prediction, recs=recs)
-        return render('result.html')
+            print(top_products[0])
+            return render(request, 'todo/result.html', {'products': top_products[:5]})

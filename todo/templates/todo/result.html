@@ -62,13 +62,13 @@
     </tr>
   </thead>
   <tbody>
-    {% for element in recs%}
+    {% for element in products%}
       <tr>
-        <td>{{ element['brand_en'] }}</td>
-        <td>{{ element['item_name'] }}</td>
-        <td>{{ element['gender_en']}}</td>
-        <td>{{ element['theme_en']}}</td>
-        <td>{{ element['note_en']|join(',')}}</td>
+        <td>{{ element.q0.Results.0.Brand.Name }}</td>
+        <td>{{ element.q0.Results.0.Name }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
     {% endfor %}
   </tbody>

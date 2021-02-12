@@ -26,10 +26,11 @@
         border: 1px solid rgba(61, 86, 233, 0.3);
         text-align: center;
       }
-      .item .item-check:checked + .item-name {
+      .item-check:checked + .item-name {
         background-color: rgba(61, 86, 233, 0.3);
       }
-      .item-name:hover {
+      .item-name:hover,
+      .item-check:checked + .item-name:hover {
         background-color:orange;
       }
 
@@ -53,18 +54,18 @@
       </dt>
 
     <form action = "/getmatch" method="POST">
-      {% for keyword in keywords %}
         <div class="elements">
             <ul class="items">
               <li class="item">
+                {% for keyword in keywords %}
                 <label>
                   <input class="item-check" name="keywords[]" type="checkbox" value= {{ keyword.title }} />
                   <div class="item-name">{{ keyword.title }}</div>
                 </label>
+                {% endfor %}
               </li>
             </ul>
         </div>
-      {% endfor %}
       {% csrf_token %}
         <button type="submit">Envoyer</button>
     </form>

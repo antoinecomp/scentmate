@@ -1,5 +1,5 @@
 {
-    "Sweet": [
+    "Doux": [
         "doux",
         "sucré",
         "gentil",
@@ -8,7 +8,7 @@
         "mignon",
         "bonbon"
     ],
-    "Gentle": [
+    "Délicat": [
         "doux",
         "délicat",
         "léger",
@@ -34,49 +34,41 @@
         "coquin",
         "sexy"
     ],
-    "Feminine": [
+    "Féminin": [
         "féminin"
     ],
-    "Fresh": [
+    "Frais": [
         "frais",
         "nouveau",
         "nouvel"
     ],
-    "Classy": [
+    "Classe": [
         "classe",
         "élégant",
         "chic"
     ],
-    "Soft": [
+    "Mou": [
         "doux",
         "mou",
         "moelleux",
         "léger",
         "doucement"
     ],
-    "Easygoing": "",
-    "The girl next door": [
-        "fille",
-        "jeune fille",
-        "porte suivante",
-        "prochain",
-        "suivant",
-        "porte",
-        "les",
-        "le",
-        "ensuite"
+    "Décontracté": ["accomodant", "facile"],
+    "Comme les autres": [
+        "normal",
+        "ordinaire",
+        "commun"
     ],
-    "Young lady": [
-        "jeune femme",
+    "Jeune femme": [
         "jeune",
         "femme",
         "dame",
         "lady",
         "petits"
     ],
-    "Lovely": [
+    "charmant": [
         "beau",
-        "charmant",
         "joli",
         "agréable",
         "délicieux",
@@ -85,7 +77,7 @@
         "adorer",
         "amour"
     ],
-    "Lively": [
+    "Gai": [
         "vivante",
         "animé",
         "vivant",
@@ -98,53 +90,50 @@
         "vivant",
         "vif"
     ],
-    "Clean": [
+    "Propre": [
         "propre",
         "clair",
         "irréprochable",
-        "nettoyer",
-        "faire le ménage"
+        "nettoyer"
     ],
-    "Summer": [
+    "Eté": [
         "d'été",
         "été",
         "passer l'été"
     ],
-    "Refreshing": [
+    "Rafraîchissant": [
         "rafraîchissant",
         "rafraîchir",
         "actualiser",
         "renouveler",
         "réactualiser"
     ],
-    "Warm": [
+    "Chaud": [
         "chaud",
         "chaleureux",
-        "agréable",
         "accueillant",
-        "élevée",
         "réchauffer",
         "chauffer"
     ],
-    "Masculine": [
+    "Masculin": [
         "masculin",
         "male",
         "masculine"
     ],
-    "Reliable": [
+    "Fiable": [
         "fiable",
         "sérieux",
         "solide",
         "stable"
     ],
-    "Mysterious": [
+    "Mystérieux": [
         "mystérieux",
         "mystère",
         "énigme",
         "arcane",
         "cachotterie"
     ],
-    "Low profile": [
+    "Furtif": [
         "profil bas",
         "bas",
         "faible",
@@ -159,7 +148,7 @@
         "esquisser",
         "dépression"
     ],
-    "Strong smell": [
+    "Fort": [
         "odeur forte",
         "fort",
         "puissant",
@@ -171,11 +160,11 @@
         "odorat",
         "sentir"
     ],
-    "Winter": [
+    "Hivernal": [
         "hiver",
         "passer l'hiver"
     ],
-    "Grass": [
+    "Herbacé": [
         "herbe",
         "fat",
         "fatty",
@@ -183,7 +172,7 @@
         "grease",
         "bold"
     ],
-    "Plants": [
+    "Plantes": [
         "plantes",
         "usines",
         "centrale",
@@ -205,10 +194,10 @@
         "marque",
         "marquer"
     ],
-    "Luxury": [
+    "Luxueux": [
         "luxe"
     ],
-    "Well-known products": [
+    "Connu": [
         "bon",
         "en bonne santé",
         "bien",
@@ -220,7 +209,7 @@
         "célèbre",
         "notoire"
     ],
-    "Usually see in ads": [
+    "A la mode": [
         "annonces",
         "à la mode",
         "annonce",
