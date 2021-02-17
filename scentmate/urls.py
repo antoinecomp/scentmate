@@ -34,8 +34,11 @@ urlpatterns = [
     path('todo/<int:todo_pk>/delete', views.deletetodo, name="deletetodo"),
     path('create/', views.createtodo, name="createtodo"),
 
-    # quizz
+    # quiz
     path('quiz', views.quiz, name="quiz"),
     path('getmatch', views.getmatch, name="getmatch"),
+
+    # similar
+    path('similar', views.similar, name='similar'),
 
 ]

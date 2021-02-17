@@ -1,0 +1,43 @@
+{% extends "todo/base.html" %}
+
+<!--<html >-->
+<!--<head>-->
+
+<!--  <meta charset="utf-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+<!--  <meta name="description" content="">-->
+<!--  <meta name="author" content="">-->
+
+<!--  <title>ScentMate Perfume Recommender</title>-->
+
+<!--  &lt;!&ndash; Bootstrap core CSS &ndash;&gt;-->
+<!--  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
+
+<!--  &lt;!&ndash; Custom fonts for this template &ndash;&gt;-->
+<!--  <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">-->
+<!--  <link href="https://fonts.googleapis.com/css?family=Cormorant:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">-->
+<!--  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i" rel="stylesheet">-->
+<!--  &lt;!&ndash; Custom styles for this template &ndash;&gt;-->
+<!--  <link href="static/css/style.css" rel="stylesheet">-->
+
+<!--</head>-->
+
+
+<!--<body>-->
+{% block content %}
+
+  <div class="recommendations">
+    <!-- <div class="login-page"> -->
+      <div class="form">
+        <form class="login-form" action = "/predict" method="POST">
+          <input type="text" placeholder="perfume id"/>
+          <button> <input type ="submit" value="Find Similar Perfumes" /> </button>
+        </form>
+      </div>
+    <!-- </div> -->
+  </div>
+
+{% endblock %}
+
+<!--</body>-->
+<!--</html>-->
