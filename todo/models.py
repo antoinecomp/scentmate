@@ -21,3 +21,7 @@ class Keyword(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Perfume(models.Model):
+    pass

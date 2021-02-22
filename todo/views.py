@@ -4,12 +4,14 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate
 from .forms import TodoForm, QuizForm
-from .models import Todo
+from .models import Todo, Perfume
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 import json
 import pymongo
 import todo.config as config
+from django.views.generic import TemplateView, ListView
+
 
 username = config.username
 password = config.password
@@ -164,9 +166,49 @@ def getmatch(request):
             # on veut celui qui maximise la somme des attributs dans results
             top_products = get_top_products(products, selected_words)
 
-            print(top_products[0])
             return render(request, 'todo/result.html', {'products': top_products[:5]})
 
 
-def similar(request):
-    return render(request, 'todo/similar.html')
+def search_similar(request):
+    return render(request, 'todo/search_similar.html')
+
+
+def search_result_view(request):
+    perfume_name = request.args.get('perfume_name')
+    # Translation from CN to English
+    brand_dict = dt.brand_dict()
+    note_dict = dt.note_dict()
+    gender_dict = dt.gender_dict()
+    theme_dict = dt.theme_dict()
+    entered = list(collection.find({'perfume_id': str(perfume_id)}, {'item_name': 1,
+                                                                     'brand': 1, 'gender': 1, 'note': 1, 'tags': 1,
+                                                                     'theme': 1, '_id': 0}))
+    for elm in entered:
+        try:
+            elm['brand_en'] = brand_dict[elm['brand']]
+            elm['gender_en'] = gender_dict[elm['gender']]
+            elm['theme_en'] = theme_dict[elm['theme']]
+            elm['note_en'] = [note_dict[note] for note in elm['note']]
+        except:
+            pass
+    if perfume_id != None:
+        recommendations = model.predict_one(str(perfume_id))  # recs is a list of perfume_id in string format
+        recs = list(collection.find({'perfume_id': {'$in': recommendations}}, {'item_name': 1,
+                                                                               'brand': 1, 'gender': 1, 'note': 1,
+                                                                               'theme': 1, '_id': 0}))
+        for rec in recs:
+            try:
+                rec['brand_en'] = brand_dict[rec['brand']]
+                rec['gender_en'] = gender_dict[rec['gender']]
+                rec['theme_en'] = theme_dict[rec['theme']]
+                rec['note_en'] = [note_dict[note] for note in rec['note']]
+            except:
+                pass
+        return render('table.html', perfume_id=perfume_id, entered=entered, recs=recs, fixed='some string')
+    else:
+        return render('table.html', perfume_id=perfume_id, fixed='some string')
+
+
+class SearchResultsView(ListView):
+    model = Perfume
+    template_name = 'todo/search_similar_results.html'

@@ -39,6 +39,7 @@ urlpatterns = [
     path('getmatch', views.getmatch, name="getmatch"),
 
     # similar
-    path('similar', views.similar, name='similar'),
+    path('similar', views.search_similar, name='similar'),
+    path('similar_results', views.SearchResultsView.as_view(), name='search_results')
 
 ]
