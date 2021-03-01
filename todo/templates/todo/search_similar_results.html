@@ -20,7 +20,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for element in products%}
+    {% for element in object_list  %}
       <tr>
         <td>{{ element.q0.Results.0.Brand.Name }}</td>
         <td>{{ element.q0.Results.0.Name }}</td>

@@ -11,11 +11,15 @@ import json
 import pymongo
 import todo.config as config
 from django.views.generic import TemplateView, ListView
+from django.db.models import Q
 
 
 username = config.username
 password = config.password
 
+client = pymongo.MongoClient(
+        f"mongodb+srv://{username}:{password}@cluster0.n2hnd.mongodb.net/ifresearch?retryWrites=true&w=majority")
+collection = client.test.sephora_backup3
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -28,7 +32,9 @@ def signupuser(request):
         # create a new user
         if request.POST['password1'] == request.POST['password2']:
             try:
-                user = User.objects.create_user(request.POST['username'], request.POST['password1'], request.POST['password2'])
+                user = User.objects.create_user(request.POST['username'],
+                                                request.POST['password1'],
+                                                request.POST['password2'])
                 user.save()
                 login(request, user)
                 return redirect('currenttodos')
@@ -40,11 +46,13 @@ def signupuser(request):
             # tell teh user the passwords didn't match
             return render(request, 'todo/signupuser.html', {'form': UserCreationForm(), 'error':'Passwords did not match'})
 
+
 @login_required()
 def logoutuser(request):
     if request.method == 'POST':
         logout(request)
         return redirect('home')
+
 
 def loginuser(request):
     if request.method == 'GET':
@@ -58,15 +66,18 @@ def loginuser(request):
             login(request, user)
             return redirect('currenttodos')
 
+
 @login_required()
 def currenttodos(request):
     todos = Todo.objects.filter(user=request.user, datecompleted__isnull=True)
     return render(request, 'todo/currenttodos.html', {'todos':todos})
 
+
 @login_required()
 def completedtodos(request):
     todos = Todo.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
     return render(request, 'todo/completedtodos.html', {'todos':todos})
+
 
 @login_required()
 def viewtodo(request, todo_pk):
@@ -97,6 +108,7 @@ def createtodo(request):
             return redirect('currenttodos')
         except ValueError:
             return render(request, 'todo/createtodo.html', {'form':TodoForm(), 'error':'Bad data passed in. Try again.'})
+
 
 @login_required()
 def completetodo(request, todo_pk):
@@ -149,7 +161,7 @@ def get_top_products(products, selected_words):
         for word in selected_words:
             total += product['d']['attributs'][word]['perceived_benefit']
         product['total'] = total
-    return sorted(products, key = lambda i: i['total'])[5:]
+    return sorted(products, key=lambda i: i['total'])[5:]
     
 
 def getmatch(request):
@@ -175,14 +187,9 @@ def search_similar(request):
 
 def search_result_view(request):
     perfume_name = request.args.get('perfume_name')
-    # Translation from CN to English
-    brand_dict = dt.brand_dict()
-    note_dict = dt.note_dict()
-    gender_dict = dt.gender_dict()
-    theme_dict = dt.theme_dict()
-    entered = list(collection.find({'perfume_id': str(perfume_id)}, {'item_name': 1,
-                                                                     'brand': 1, 'gender': 1, 'note': 1, 'tags': 1,
-                                                                     'theme': 1, '_id': 0}))
+
+    entered = list(collection.find({'perfume_name': str(perfume_name)}, {'item_name': 1, 'brand': 1, 'gender': 1,
+                                                                         'note': 1, 'tags': 1, 'theme': 1, '_id': 0}))
     for elm in entered:
         try:
             elm['brand_en'] = brand_dict[elm['brand']]
@@ -212,3 +219,8 @@ def search_result_view(request):
 class SearchResultsView(ListView):
     model = Perfume
     template_name = 'todo/search_similar_results.html'
+
+    def get_queryset(self):  # new
+        query = self.request.GET.get('q')
+        object_list  = list(collection.find({"q0.Results.0.Name": {"$regex": query, "$options": "i"}}))
+        return object_list

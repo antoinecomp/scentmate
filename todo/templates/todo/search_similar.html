@@ -29,9 +29,13 @@
   <div class="recommendations">
     <!-- <div class="login-page"> -->
       <div class="form">
+        <form action="{% url 'search_results' %}" method="get">
+          <input name="q" type="text" placeholder="Perfume name...">
+          <input type ="submit" value="Find Similar Perfumes" />
+        </form>
         <form class="login-form" action = "/predict" method="POST">
           <input type="text" placeholder="perfume name"/> <!-- https://www.youtube.com/watch?v=TRODv6UTXpM&ab_channel=ProgrammingKnowledge -->
-          <button> <input type ="submit" value="Find Similar Perfumes" /> </button>
+          <input type ="submit" value="Find Similar Perfumes" />
         </form>
       </div>
     <!-- </div> -->
