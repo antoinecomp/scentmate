@@ -1,47 +1,122 @@
 {% extends "todo/base.html" %}
 
-<!--<html >-->
-<!--<head>-->
-
-<!--  <meta charset="utf-8">-->
-<!--  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
-<!--  <meta name="description" content="">-->
-<!--  <meta name="author" content="">-->
-
-<!--  <title>ScentMate Perfume Recommender</title>-->
-
-<!--  &lt;!&ndash; Bootstrap core CSS &ndash;&gt;-->
-<!--  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
-
-<!--  &lt;!&ndash; Custom fonts for this template &ndash;&gt;-->
-<!--  <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">-->
-<!--  <link href="https://fonts.googleapis.com/css?family=Cormorant:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">-->
-<!--  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i" rel="stylesheet">-->
-<!--  &lt;!&ndash; Custom styles for this template &ndash;&gt;-->
-<!--  <link href="static/css/style.css" rel="stylesheet">-->
-
-<!--</head>-->
-
-
-<!--<body>-->
 {% block content %}
 
   <div class="recommendations">
     <!-- <div class="login-page"> -->
-      <div class="form">
-        <form action="{% url 'search_results' %}" method="get">
-          <input name="q" type="text" placeholder="Perfume name...">
-          <input type ="submit" value="Find Similar Perfumes" />
-        </form>
-        <form class="login-form" action = "/predict" method="POST">
-          <input type="text" placeholder="perfume name"/> <!-- https://www.youtube.com/watch?v=TRODv6UTXpM&ab_channel=ProgrammingKnowledge -->
-          <input type ="submit" value="Find Similar Perfumes" />
+    <div class="row justify-content-center">
+      <div class="col-8">
+        <form autocomplete="off" action="{% url 'similar_results' %}" method="get">
+            <div id="autocompleteContainer" class="input-group mb-3 autocomplete">
+              <input name="q" id="autocompleteInput" type="text" class="form-control autocomplete" placeholder="Perfume name" aria-label="Movie title search" aria-describedby="searchButton">
+              <button class="btn btn-outline-secondary" type="submit" id="perfumename">Search</button>
+<!--              <input name="q" type="text" placeholder="Perfume name...">-->
+<!--              <input id="perfumename2" type ="submit" value="Find Similar Perfumes"/>-->
+            </div>
         </form>
       </div>
-    <!-- </div> -->
+    </div>
+    <!-- jQuery-UI CSS -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/cupertino/jquery-ui.css"/>
+    <!-- jQuery-Min JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- jQuery-UI JS -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
   </div>
 
-{% endblock %}
+  <script>
+    let currentfocus;
+    let autocompleteContainer = document.getElementById('autocompleteContainer');
+    let autocompleteInput = document.getElementById('autocompleteInput');
 
-<!--</body>-->
-<!--</html>-->
+    function closeAllLists() {
+      let listElements = document.getElementsByClassName('autocomplete-items');
+      for (let i = 0; i < listElements.length; i++) {
+        listElements[i].parentNode.removeChild(listElements[i]);
+      }
+    }
+
+    function autocomplete(value) {
+      if(!value) return;
+      currentFocus = -1;
+      url = `/api/perfumes?query=${value}`;
+      fetch(url)
+      .then(res => res.text()) // Devolver solo texto
+      .then(str => {
+          console.log(str)
+          let listContainer = document.createElement('DIV');
+          listContainer.setAttribute('id', 'autocompleteList');
+          listContainer.setAttribute('class', 'autocomplete-items');
+          autocompleteContainer.appendChild(listContainer);
+          // Aplicar remplazos
+          str = str.replaceAll("{'", '{"');
+          str = str.replaceAll("':", '":');
+          str = str.replaceAll(": '", ': "');
+          str = str.replaceAll("'}", '"}');
+          // Interpretar JSON
+          let json = JSON.parse(str);
+
+          let perfumes= json.data;
+          for(let perfume of perfumes) {
+            let name = document.createElement('DIV');
+            name.innerText = perfume.name;
+            name.addEventListener('click', e => {
+              autocompleteInput.value = e.currentTarget.innerText;
+              closeAllLists();
+            });
+            listContainer.appendChild(name);
+          }
+      })
+      .catch(e => {
+          console.error(e.message);
+          console.log('Uuuuups');
+    });
+    }
+
+    function keyDownHandler(event) {
+      let items;
+      let item = document.getElementById('autocompleteList');
+      if (item) items = item.getElementsByTagName("div");
+      if(event.keyCode === 40) { // Down
+        currentFocus++;
+        addActiveClass(items);
+      } else if(event.keyCode === 38) {  // Up
+        currentFocus--;
+        addActiveClass(items);
+      } else if(event.keyCode === 13) {  // Enter
+        event.preventDefault();
+        if(currentFocus > -1) {
+          if(items) {
+            items[currentFocus].click();
+          }
+        }
+      }
+    }
+
+    function addActiveClass(items) {
+      if (!items) return;
+      removeActiveClass(items);
+      if (currentFocus >= items.length) currentFocus = 0;
+      if (currentFocus < 0) currentFocus = (items.length - 1);
+      items[currentFocus].classList.add("autocomplete-active");
+    }
+
+    function removeActiveClass(items) {
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.remove("autocomplete-active");
+      }
+    }
+
+    autocompleteInput.addEventListener('input', e => {
+      closeAllLists();
+      autocomplete(e.currentTarget.value);
+    });
+
+    autocompleteInput.addEventListener('keydown', keyDownHandler);
+
+    document.addEventListener('click', e => {
+      closeAllLists();
+    });
+  </script>
+
+{% endblock %}

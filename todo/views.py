@@ -11,6 +11,8 @@ import json
 import pymongo
 import todo.config as config
 from django.views.generic import TemplateView, ListView
+from django.http import JsonResponse
+
 from django.db.models import Q
 
 
@@ -181,7 +183,7 @@ def getmatch(request):
             return render(request, 'todo/result.html', {'products': top_products[:5]})
 
 
-def search_similar(request):
+def similar(request):
     return render(request, 'todo/search_similar.html')
 
 
@@ -222,5 +224,97 @@ class SearchResultsView(ListView):
 
     def get_queryset(self):  # new
         query = self.request.GET.get('q')
-        object_list  = list(collection.find({"q0.Results.0.Name": {"$regex": query, "$options": "i"}}))
-        return object_list
+        object_list = list(collection.aggregate([
+            {
+                '$search': {
+                    'index': 'default',
+                    'compound': {
+                        'must': {
+                            'text': {
+                                'query': str(query),
+                                'path': 'name',
+                                'fuzzy': {
+                                    'maxEdits': 2
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+        ))
+        return [x["name"] for x in object_list]
+
+
+def search(request):
+    # params = request.GET
+    # query = params.get('q', '')
+    query = request.GET.get('q')
+    pipeline = [
+        {
+            '$search': {
+                'index': 'default',
+                'compound': {
+                    'must': {
+                        'text': {
+                            'query': str(query),
+                            'path': 'name',
+                            'fuzzy': {
+                                'maxEdits': 2
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "$limit": 10
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "name": 1
+            }
+        }
+    ]
+    result = list(collection.aggregate(pipeline))
+    data = {'data': result}
+    return JsonResponse(data)
+
+
+def suggest_restaurants(request):
+    restname = request.args.get('restaurant')
+
+    zipcode = request.args.get('zipcode')
+    rad = request.args.get('radius')
+
+    geolocator = Nominatim(user_agent='myapplication')
+    location = geolocator.geocode(int(zipcode), timeout=None)
+    lat=float(location.raw['lat'])
+    lon=float(location.raw['lon'])
+    nearby_restaurants = [{'orig_lat':lat, 'orig_lon':lon}]
+
+    METERS_PER_MILE = 1609.34
+
+    pipeline = [ { "$search": {
+                        "index": "rest_name_autocomplete_sample",
+                        "compound":  {
+                            "must": {
+                                    "autocomplete": {
+                                        "query": restname,
+                                        "path": "name",
+                                        "tokenOrder": "any"
+                                        }
+                                    }
+                        }
+                    }
+                },
+                {"$limit": 20}]
+    documents = db.restaurants.aggregate(pipeline)
+
+    for document in documents:
+        nearby_restaurants.append({
+                       'restaurant_name':document['name'] ,
+                       'lat':document['address']['coord'][1],
+                       'lon':document['address']['coord'][0]
+                })

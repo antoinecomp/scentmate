@@ -21,10 +21,13 @@ urlpatterns = [
 
     # quiz
     path('quiz/', views.quiz, name="quiz"),
-    path('getmatch/', views.getmatch, name="getmatch"),
+    path('quiz/getmatch/', views.getmatch, name="getmatch"),
 
     # similar
-    path('similar/', views.search_similar, name='similar'),
-    path('similar_results/', views.SearchResultsView.as_view(), name='search_results')
+    path('similar/', views.similar, name='similar'),
+    path('similar/similar_results/', views.SearchResultsView.as_view(), name='similar_results'),
+
+    # api
+    path('api/perfumes/', views.search, name='api'),
 
 ]
