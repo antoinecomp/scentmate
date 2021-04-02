@@ -187,37 +187,6 @@ def similar(request):
     return render(request, 'todo/search_similar.html')
 
 
-def search_result_view(request):
-    perfume_name = request.args.get('perfume_name')
-
-    entered = list(collection.find({'perfume_name': str(perfume_name)}, {'item_name': 1, 'brand': 1, 'gender': 1,
-                                                                         'note': 1, 'tags': 1, 'theme': 1, '_id': 0}))
-    for elm in entered:
-        try:
-            elm['brand_en'] = brand_dict[elm['brand']]
-            elm['gender_en'] = gender_dict[elm['gender']]
-            elm['theme_en'] = theme_dict[elm['theme']]
-            elm['note_en'] = [note_dict[note] for note in elm['note']]
-        except:
-            pass
-    if perfume_id != None:
-        recommendations = model.predict_one(str(perfume_id))  # recs is a list of perfume_id in string format
-        recs = list(collection.find({'perfume_id': {'$in': recommendations}}, {'item_name': 1,
-                                                                               'brand': 1, 'gender': 1, 'note': 1,
-                                                                               'theme': 1, '_id': 0}))
-        for rec in recs:
-            try:
-                rec['brand_en'] = brand_dict[rec['brand']]
-                rec['gender_en'] = gender_dict[rec['gender']]
-                rec['theme_en'] = theme_dict[rec['theme']]
-                rec['note_en'] = [note_dict[note] for note in rec['note']]
-            except:
-                pass
-        return render('table.html', perfume_id=perfume_id, entered=entered, recs=recs, fixed='some string')
-    else:
-        return render('table.html', perfume_id=perfume_id, fixed='some string')
-
-
 class SearchResultsView(ListView):
     model = Perfume
     template_name = 'todo/search_similar_results.html'
@@ -225,31 +194,31 @@ class SearchResultsView(ListView):
     def get_queryset(self):  # new
         query = self.request.GET.get('q')
         object_list = list(collection.aggregate([
-            {
-                '$search': {
-                    'index': 'default',
-                    'compound': {
-                        'must': {
-                            'text': {
-                                'query': str(query),
-                                'path': 'name',
-                                'fuzzy': {
-                                    'maxEdits': 2
+                {
+                    '$search': {
+                        'index': 'default',
+                        'compound': {
+                            'must': {
+                                'text': {
+                                    'query': str(query),
+                                    'path': 'name',
+                                    'fuzzy': {
+                                        'maxEdits': 2
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        ]
+            ]
         ))
-        return [x["name"] for x in object_list]
+        return [x for x in object_list]
 
 
 def search(request):
     # params = request.GET
     # query = params.get('q', '')
-    query = request.GET.get('q')
+    query = request.GET.get('query')
     pipeline = [
         {
             '$search': {
@@ -280,41 +249,3 @@ def search(request):
     result = list(collection.aggregate(pipeline))
     data = {'data': result}
     return JsonResponse(data)
-
-
-def suggest_restaurants(request):
-    restname = request.args.get('restaurant')
-
-    zipcode = request.args.get('zipcode')
-    rad = request.args.get('radius')
-
-    geolocator = Nominatim(user_agent='myapplication')
-    location = geolocator.geocode(int(zipcode), timeout=None)
-    lat=float(location.raw['lat'])
-    lon=float(location.raw['lon'])
-    nearby_restaurants = [{'orig_lat':lat, 'orig_lon':lon}]
-
-    METERS_PER_MILE = 1609.34
-
-    pipeline = [ { "$search": {
-                        "index": "rest_name_autocomplete_sample",
-                        "compound":  {
-                            "must": {
-                                    "autocomplete": {
-                                        "query": restname,
-                                        "path": "name",
-                                        "tokenOrder": "any"
-                                        }
-                                    }
-                        }
-                    }
-                },
-                {"$limit": 20}]
-    documents = db.restaurants.aggregate(pipeline)
-
-    for document in documents:
-        nearby_restaurants.append({
-                       'restaurant_name':document['name'] ,
-                       'lat':document['address']['coord'][1],
-                       'lon':document['address']['coord'][0]
-                })
