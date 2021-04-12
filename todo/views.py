@@ -130,15 +130,19 @@ def deletetodo(request, todo_pk):
 
 
 def quiz(request):
-    with open('todo/templates/todo/data/keywords_translated.json') as f:
+    with open('todo/templates/todo/data/keywords.json') as f:
         keywords = json.load(f)
+    with open('todo/templates/todo/data/notes.json') as f:
+        notes = json.load(f)
+    with open('todo/templates/todo/data/themes.json') as f:
+        themes = json.load(f)
     if request.method == 'POST':
         form = QuizForm(request.POST)
         if form.is_valid():
             keywords_selected = form.cleaned_data['keywords_selected']
             print("keywords_selected: ", keywords_selected)
     form = QuizForm()
-    return render(request, 'todo/quiz2.html', {'form': form, 'keywords': keywords})
+    return render(request, 'todo/quiz2.html', {'form': form, 'keywords': keywords, 'notes': notes, 'themes': themes})
 
 
 def quiz2(request):
