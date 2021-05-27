@@ -1,0 +1,59 @@
+{% extends "todo/base.html" %}
+
+{% block content %}
+
+<body>
+
+<div class="recommendations">
+  <!-- Recommendation -->
+  <h3> Based on what you like, we found 5 perfumes which match you the best: </h3>
+</div>
+
+<table class="table table-striped" align='center'>
+  <thead>
+    <tr>
+      <th align="center">Brand</th>
+      <th align="center">Perfume Name</th>
+      <th align="center">Gender</th>
+      <th align="center">Theme</th>
+      <th align="center">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for element in object_list  %}
+      <tr>
+        <td>{{ element.q0.Results.0.Brand.Name }}</td>
+        <td>{{ element.q0.Results.0.Name }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<section class="content-section-a">
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col-lg-5 ml-auto">
+        <div class="clearfix"></div>
+        <h2 class="section-heading"></h2>
+      </div>
+      <div class="col-lg-5 mr-auto ">
+        <img class="img-fluid" src="img/phones.png" alt="">
+      </div>
+    </div>
+
+  </div>
+  <!-- /.container -->
+
+
+</section>
+<!-- /.content-section-a -->
+
+
+</body>
+
+{% endblock %}

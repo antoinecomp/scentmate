@@ -1,0 +1,114 @@
+{% extends "todo/base.html" %}
+
+{% block content %}
+
+   <style>
+      .elements {
+        display: block;
+      }
+      .items {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        flex-direction: column;
+      }
+      .item {
+        flex: 1 0 20%;
+      }
+      .item-check {
+        display: none;
+      }
+      .item-name {
+        padding: 8px;
+        margin: 2px;
+        border-radius: 8px;
+        border: 1px solid rgba(61, 86, 233, 0.3);
+        text-align: center;
+      }
+      .item-check:checked + .item-name {
+        background-color: rgba(61, 86, 233, 0.3);
+      }
+      .item-name:hover,
+      .item-check:checked + .item-name:hover {
+        background-color:orange;
+      }
+
+    </style>
+
+  <!-- Header -->
+  <header class="intro-header">
+    <div class="container">
+      <div class="col-lg-5 mr-auto order-lg-2">
+      <h3><br>Tell me something about you... </h3>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <section class="content-section-a">
+
+    <div class="container">
+        <form action = "getmatch/" method="POST">
+            <dt>
+                <span>Pick the keywords you want to express when wearing perfume</span>
+            </dt>
+            <div class="elements">
+                <ul class="items">
+                  <li class="item">
+                    {% for keyword in keywords %}
+                    <label>
+                      <input class="item-check" name="keywords[]" type="checkbox" value= {{ keyword.title }} />
+                      <div class="item-name">{{ keyword.title }}</div>
+                    </label>
+                    {% endfor %}
+                  </li>
+                </ul>
+            </div>
+          <div>
+        <dt>
+            <span>What notes do you like?</span>
+        </dt>
+          <div class="elements">
+                <ul class="items">
+                  <li class="item">
+                    {% for note in notes %}
+                    <label>
+                      <input class="item-check" name="notes[]" type="checkbox" value= {{ note.title }} />
+                      <div class="item-name">{{ note.title }}</div>
+                    </label>
+                    {% endfor %}
+                  </li>
+                </ul>
+            </div>
+          <div>
+          <dt>
+            <span>What themes do you like?</span>
+        </dt>
+          <div class="elements">
+                <ul class="items">
+                  <li class="item">
+                    {% for theme in themes %}
+                    <label>
+                      <input class="item-check" name="themes[]" type="checkbox" value= {{ theme.title }} />
+                      <div class="item-name">{{ theme.title }}</div>
+                    </label>
+                    {% endfor %}
+                  </li>
+                </ul>
+            </div>
+          <div>
+          {% csrf_token %}
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
+  </section>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="static/vendor/jquery/jquery.min.js"></script>
+  <script src="static/vendor/popper/popper.min.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+
+
+{% endblock %}
