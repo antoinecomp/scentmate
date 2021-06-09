@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import User
 from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate
 from .forms import TodoForm, QuizForm
@@ -9,18 +9,16 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 import json
 import pymongo
-import todo.config as config
-from django.views.generic import TemplateView, ListView
+from todo import config
+from django.views.generic import ListView
 from django.http import JsonResponse
 import pandas as pd
-
-from django.db.models import Q
 
 username = config.username
 password = config.password
 
 client = pymongo.MongoClient(
-    f"mongodb+srv://test:MongoDB.2021@cluster0.n2hnd.mongodb.net/ifresearch?retryWrites=true&w=majority")
+    f"mongodb+srv://{username}:{password}@cluster0.n2hnd.mongodb.net/ifresearch?retryWrites=true&w=majority")
 collection = client.test.sephora_backup3
 
 
