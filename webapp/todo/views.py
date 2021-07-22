@@ -13,6 +13,8 @@ from todo import config
 from django.views.generic import ListView
 from django.http import JsonResponse
 import pandas as pd
+import requests
+from bson.objectid import ObjectId
 
 username = config.username
 password = config.password
@@ -218,39 +220,31 @@ def querydict_to_dict(query_dict):
         data[key] = v
     return data
 
-
-def get_top_products(products, selected_words):
-    # for each product we need to create the total scores on selected_words
-    for product in products:
-        total = 0
-        print(selected_words)
-        if type(selected_words) == list:
-            for word in selected_words:
-                total += product['d']['attributs'][word]['perceived_benefit']
-            product['total'] = total
-        else:
-            word = selected_words
-            total += product['d']['attributs'][word]['perceived_benefit']
-            product['total'] = total
-
-    return sorted(products, key=lambda i: i['total'])[5:]
+def get_top_products(selected_words):
+    """
+    :param selected_words: the words selected by the user to describe the perfume wanted
+    :return: the list of top 5 perfume corresponding to the o
+    """
+    selected_words = selected_words.lower()
+    query = {'features': selected_words}
+    r = requests.get('https://perfumerecommender-api.herokuapp.com/perfume', params=query)
+    products = r.json()
+    return products
 
 
 def getmatch(request):
     if request.method == 'POST':
-        print(request)
-        if request.method == 'POST':
-            selected_words = querydict_to_dict(request.POST)['keywords[]']
-            print("result: ", selected_words)
-            client = pymongo.MongoClient(
-                f"mongodb+srv://{username}:{password}@cluster0.n2hnd.mongodb.net/ifresearch?retryWrites=true&w=majority")
-            collection = client.test.sephora_backup3
-            cursor = collection.find({})
-            products = [x for x in cursor]
-            # on veut celui qui maximise la somme des attributs dans results
-            top_products = get_top_products(products, selected_words)
+        selected_words = querydict_to_dict(request.POST)['keywords[]']
+        client = pymongo.MongoClient(
+            f"mongodb+srv://{username}:{password}@cluster0.n2hnd.mongodb.net/ifresearch?retryWrites=true&w=majority")
+        top_products = get_top_products(selected_words)
 
-            return render(request, 'todo/result.html', {'products': top_products[:5]})
+        collection = client.test.sephora_backup3
+        top_products = [ObjectId(x) for x in top_products['perfumes']]
+        print(top_products)
+        products = collection.find({'_id': {"$in": top_products}})
+        print("products[0]: ", products[0])
+        return render(request, 'todo/result.html', {'products': products})
 
 
 def similar(request):
