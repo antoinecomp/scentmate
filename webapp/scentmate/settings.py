@@ -25,7 +25,7 @@ SECRET_KEY = 'uvbpd^=zbbktjyfc*7pm)e$k9b@k-1cm8^(i9std9dl@^f_-g_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['scentmate.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
