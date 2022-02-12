@@ -1,6 +1,7 @@
 from django.test import TestCase
 from todo.models import Keyword
 from django.contrib.auth.models import User # Required to assign User as a borrower
+from django.urls import reverse
 
 
 # Je veux tester que lorsque je fais une rerquête elle aboutie bien.
