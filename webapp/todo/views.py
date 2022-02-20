@@ -225,7 +225,10 @@ def get_top_products(selected_words):
     :param selected_words: the words selected by the user to describe the perfume wanted
     :return: the list of top 5 perfume corresponding to the o
     """
-    selected_words = selected_words.lower()
+    if type(selected_words) == str:
+        selected_words = selected_words.lower()
+    elif type(selected_words) == list:
+        selected_words = [word.lower() for word in selected_words]
     query = {'features': selected_words}
     r = requests.get('https://perfumerecommender-api.herokuapp.com/perfume', params=query)
     products = r.json()
